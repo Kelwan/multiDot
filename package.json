@@ -2,7 +2,7 @@
   "name": "dotpack",
   "version": "1.0.0",
   "description": "Package for playing multiDot",
-  "main": "main.js",
+  "main": "./client/main.js",
   "dependencies": {
     "blessed": "^0.1.81"
   },

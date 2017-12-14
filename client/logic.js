@@ -1,11 +1,13 @@
 
-let bless = require('./blessed.js')
+let bless = require('./menu.js')
+
+
 
 function Player(){
 
 }
 
-Player.prototype.move = ((){
+Player.prototype.move = (() => {
 
 
 })
@@ -26,6 +28,6 @@ function Grid(gameType, player1, player2, player3, player4) {
 
 }
 
-Grid.prototype.update(move){
+Grid.prototype.update = ((move) => {
 
-}
+});

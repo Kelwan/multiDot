@@ -3,8 +3,24 @@
 
 
 let blessed = require('blessed');
-let visual = require('./blessed.js');
+let menu = require('./menu.js');
 let logic = require('./logic.js');
+//let gameBoard = require('./gameBoard.js');
+
+
+
+console.log(menu.setGameType);
+
+let val = menu.setGameType;
+
+if (val == 1){
+  let confirmation = blessed.text({
+    parent: menu.screen,
+    content: 'SINGLEPLAYER CONFIRMED',
+    bg: 'green'
+  });
+}
+
 
 
 
