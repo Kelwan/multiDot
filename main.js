@@ -1,6 +1,8 @@
 
 
 const blessed = require('blessed');
+//const logic = require('./logic.js');
+
 
 function rand(max, min){
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -17,34 +19,24 @@ let bg = blessed.box({
   width: screen.width
 });
 
-/*let block = blessed.box({
-  parent: bg,
-  width: 5,
-  height: 5,
-  bg: 'yellow',
-  content: 'come here',
-  top: 15,
-  right: 15
-});*/
-
 let p1 = blessed.box({
   parent: bg,
   width: 3,
   height: 3,
   bg: 'red',
-  content: 'BLUH',
-  top: 0,
+  content: 'P1',
+  top: 10,
   right: 0
 });
 
 let p2 = blessed.box({
   parent: bg,
-  width: 2,
-  height: 4,
-  bg: 'red',
-  content: 'BLUH',
-  top: 0,
-  right: 0
+  width: 3,
+  height: 3,
+  bg: 'yellow',
+  content: 'P2',
+  top: 10,
+  left: 0
 });
 
 let score = blessed.box({
@@ -54,6 +46,16 @@ let score = blessed.box({
   right: 50,
   height: 3,
   content: 'SCORE:'
+});
+
+let error = blessed.box({
+  parent: bg,
+  width: 5,
+  height: 5,
+  top: 20,
+  left: 20,
+  color: 'white'
+  //content: error
 });
 
 let tally = blessed.box({
@@ -71,9 +73,20 @@ screen.key('q', function(){
   process.exit(0);
 });
 
+screen.key('e', function(){
+  let error = blessed.box({
+    parent: bg,
+    width: 5,
+    height: 5,
+    top: 20,
+    left: 20,
+    color: 'white'
+    //content: error
+  });
+});
+
 
 p1.speed = 1;
-p1.rtop = 0;``
 p1.movable = true;
 
 
@@ -92,10 +105,20 @@ function Block(width, height){
     content: 'Eat me!'
   });
 
+  this.width = width;
+  this.height = height;
   this.box = box;
 }
 
-Block.prototype.Generate = (() => {
+
+let block = new Block(screen.width, screen.height);
+
+Block.prototype.newBox = function (oldBox){
+
+  oldBox.destroy();
+
+  let rand1 = rand(screen.width, 1);
+  let rand2 = rand(screen.height, 10);
 
   let box = blessed.box({
     parent: bg,
@@ -107,15 +130,13 @@ Block.prototype.Generate = (() => {
     content: 'Eat me!'
   });
 
-});
+  this.box = box;
+
+}
 
 Block.prototype.contents = ((box) => {
   box.setContent('THX BRUH');
 });
-
-let block = new Block(screen.width, screen.height);
-
-
 
 screen.on('keypress', function(ch, key){
 
@@ -128,19 +149,22 @@ screen.on('keypress', function(ch, key){
     screen.render();
   }
   else if(key.name == 'left'){
-    if(p1.rleft > 0) p1.rleft -= p1.speed;
+    error.setContent(p1.left.toString());
+    if(p1.left > 0) p1.left -= p1.speed;
     screen.render();
   }
   else if(key.name == 'right'){
-    if(p1.rright > 0) p1.rleft += p1.speed;
+    error.setContent(p1.right.toString());
+    if(p1.rleft < screen.width) {
+      p1.rleft += p1.speed;
+    }
     screen.render();
   }
   // Check for overlap
-  if(block.box.rleft == p1.rleft && block.box.rtop == p1.rtop){
-    //block.contents(box);
+  if(block.box.left == p1.left && block.box.top == p1.top){
     p1.score++;
     score.setContent('SCORE: ' + p1.score);
-    let block = new Block(screen.width, screen.height);
+    block.newBox(block.box);
     screen.render();
   }
 
