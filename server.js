@@ -1,24 +1,53 @@
 
 const net = require('net');
+const blessed = require('blessed');
 
-const server = net.createServer((socket) => {
-  console.log('client connected');
 
-  socket.on('error', (err) => {
+
+
+function multiServer(){
+
+  let screen = blessed.screen({
+
+  });
+
+
+  let bg = blessed.box({
+    parent:screen,
+    width: screen.width,
+    height: screen.height,
+    bg: 'red'
+  });
+
+  let host = blessed.box({
+    parent: screen,
+    top: '50%',
+    left: '50%',
+    content: 'WAITING FOR CONNECTION...'
+  });
+
+  screen.render();
+
+  const server = net.createServer((socket) => {
+
+    socket.on('error', (err) => {
+      console.log(err);
+    });
+
+    socket.on('data', (data) => {
+      console.log(data.toString());
+    });
+
+  });
+
+  server.on('error', (err) => {
     console.log(err);
   });
 
-  socket.on('data', (data) => {
-    console.log(data.toString());
+  server.listen(3000, () => {
+    console.log(server.address());
   });
+}
 
-  socket.write("Hey Myself!");
-});
 
-server.on('error', (err) => {
-  console.log(err);
-});
-
-server.listen(3000, () => {
-  console.log(server.address());
-});
+module.exports.multiServer = multiServer();
