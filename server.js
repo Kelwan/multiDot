@@ -47,7 +47,9 @@ function multiServer(){
   server.listen(3000, () => {
     console.log(server.address());
   });
+
 }
 
 
 module.exports.multiServer = multiServer();
+// It becomes a method for 'server'??

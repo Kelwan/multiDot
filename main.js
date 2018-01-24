@@ -54,19 +54,20 @@ let clientBox = blessed.box({
   top: '50%'
 });
 
-screen.key('q', function (){
+screen.key('q', () => {
   process.exit('0');
 });
 
-screen.key('h', function(){
-  hostBox.setContent('H HAS BEEN PRESSED');
-  server.multiHost;
+screen.key('h', () => {
+  hostBox.setContent('H PRESSED');
+  //screen.destroy();
+  server.multiServer;
   screen.render();
 });
 
-screen.key('j', function(){
+screen.key('j', () => {
+  //screen.destroy();
   client.multiClient;
-  screen.render();
 });
 
 screen.render();
