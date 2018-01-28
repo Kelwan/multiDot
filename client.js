@@ -1,6 +1,7 @@
 
 const net = require('net');
 const blessed = require('blessed');
+const main = require('./main.js');
 
 function multiClient(){
 
@@ -17,13 +18,26 @@ function multiClient(){
 
   const client = net.createConnection({ port: 3000 }, () => {
     clientBox.setContent('CONNECTED TO HOST');
-    //client.write("SUP");
+    setTimeout(() => {
+      main.startGame();
+    }, 1500);
   });
 
+  setTimeout(() => {
+    screen.render();
+  }, 1500);
+
+  client.on('data', (data) => {
+
+  });
+
+  screen.key('q', () => {
+    process.exit(0);
+  });
 
 }
 
 
 
 
-module.exports.multiClient = multiClient();
+module.exports.multiClient = multiClient;
