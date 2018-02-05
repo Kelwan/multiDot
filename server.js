@@ -24,7 +24,8 @@ function multiServer(){
     screen.render();
 
     setTimeout(() => {
-      main.startGame();
+      screen.destroy();
+      main.startGame('host', socket);
     }, 1500);
 
     socket.on('error', (err) => {
@@ -35,7 +36,7 @@ function multiServer(){
 
     });
 
-    //socket.write();
+
   });
 
   server.on('error', (err) => {

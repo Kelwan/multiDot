@@ -1,46 +1,7 @@
-function rand(max, min){
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
-function Block(width, height){
 
-  let rand1 = rand(width, 1);
-  let rand2 = rand(height, 1);
+const blessed = require('blessed');
 
-  let box = blessed.box({
-    parent: bg,
-    height: 3,
-    width: 3,
-    left: rand1,
-    top: rand2,
-    bg: 'green',
-    content: 'Eat me!'
-  });
-
-  this.width = width;
-  this.height = height;
-  this.box = box;
-}
-
-Block.prototype.newBox = function (oldBox){
-
-  oldBox.destroy();
-
-  let rand1 = rand(screen.width, 1);
-  let rand2 = rand(screen.height, 10);
-
-  let box = blessed.box({
-    parent: bg,
-    height: 3,
-    width: 3,
-    left: rand1,
-    top: rand2,
-    bg: 'green',
-    content: 'Eat me!'
-  });
-
-  this.box = box;
-}
 
 
 function Render(){
@@ -124,38 +85,11 @@ function Render(){
     });
   });
 
-  let block = new Block(screen.width, screen.height);
 
-  screen.on('keypress', function(ch, key){
-    if (key.name == 'down'){
-      if(p1.rbottom > 0) p1.rtop += p1.speed;
-      screen.render();
-    }
-    else if(key.name == 'up'){
-      if (p1.rtop > 0) p1.rtop -= p1.speed;
-
-      screen.render();
-    }
-    else if(key.name == 'left'){
-      if(p1.left > 0) p1.left -= p1.speed;
-      screen.render();
-    }
-    else if(key.name == 'right'){
-      if(p1.rleft < screen.width) {
-        p1.rleft += p1.speed;
-      }
-      screen.render();
-    }
-    // Check for overlap
-    if(block.box.left == p1.left && block.box.top == p1.top){
-      p1.score++;
-      score.setContent('SCORE: ' + p1.score);
-      block.newBox(block.box);
-      screen.render();
-    }
-  });
 
   this.screen = screen;
+  this.p1 = p1;
+  this.p2 = p2;
 
   screen.render();
 
@@ -167,6 +101,54 @@ Render.prototype.updateScore = ((p1Score, p2Score) => {
 
 Render.prototype.renderScreen = (()=> {
   screen.render();
+});
+
+Render.prototype.newBox = function () {
+
+  let box = blessed.box({
+    parent: game.screen,
+    height: 3,
+    width: 3,
+    left: block.rand1,
+    top: block.rand2,
+    bg: 'green',
+    content: 'Eat me!'
+  });
+
+};
+
+Render.prototype.replaceBlock = ((oldBox) => {
+  //oldBox.destroy();
+
+if(string == 'host'){
+  let box = blessed.box({
+    parent: bg,
+    height: 3,
+    width: 3,
+    left: rand1,
+    top: rand2,
+    bg: 'green',
+    content: 'Eat me!'
+  });
+}
+
+});
+
+Render.prototype.movePlayerMinus = ((player, direction) => {
+
+  
+
+  screen.render();
+
+
+});
+
+Render.prototype.movePlayerPlus = ((player, direction) => {
+  screen.render();
+});
+
+Render.prototype.confirmConnect = (() => {
+  p1.setContent('DATA RECEIEVED');
 });
 
 module.exports.Render = Render;

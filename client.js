@@ -19,7 +19,7 @@ function multiClient(){
   const client = net.createConnection({ port: 3000 }, () => {
     clientBox.setContent('CONNECTED TO HOST');
     setTimeout(() => {
-      main.startGame();
+      main.startGame('client');
     }, 1500);
   });
 
@@ -28,7 +28,7 @@ function multiClient(){
   }, 1500);
 
   client.on('data', (data) => {
-
+    process.exit(0);
   });
 
   screen.key('q', () => {
