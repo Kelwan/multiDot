@@ -6,6 +6,7 @@ const main = require('./main.js');
 
 function multiServer(){
 
+
   let screen = blessed.screen({});
   let connection = false;
 
@@ -43,7 +44,7 @@ function multiServer(){
     console.log(err);
   });
 
-  server.listen(3000, () => {
+  server.listen(8124, () => {
 
   });
 

@@ -16,7 +16,7 @@ function multiClient(){
 
   screen.render();
 
-  const client = net.createConnection({ port: 3000 }, () => {
+  const client = net.createConnection({ port: 8124 }, () => {
     clientBox.setContent('CONNECTED TO HOST');
     setTimeout(() => {
       main.startGame('client');
@@ -28,7 +28,7 @@ function multiClient(){
   }, 1500);
 
   client.on('data', (data) => {
-    process.exit(0);
+    ClientData(data);
   });
 
   screen.key('q', () => {
@@ -37,7 +37,13 @@ function multiClient(){
 
 }
 
+function ClientData(obj) {
+  let clientPack = JSON.parse(obj);
+  clientPack.length-1;
+  this.clientPack = clientPack;
+}
 
 
 
+module.exports.ClientData = ClientData;
 module.exports.multiClient = multiClient;

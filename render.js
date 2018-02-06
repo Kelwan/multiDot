@@ -85,6 +85,10 @@ function Render(){
     });
   });
 
+  screen.key('q', function(){
+    process.exit(0);
+  });
+
 
 
   this.screen = screen;
@@ -104,7 +108,6 @@ Render.prototype.renderScreen = (()=> {
 });
 
 Render.prototype.newBox = function () {
-
   let box = blessed.box({
     parent: game.screen,
     height: 3,
@@ -114,7 +117,6 @@ Render.prototype.newBox = function () {
     bg: 'green',
     content: 'Eat me!'
   });
-
 };
 
 Render.prototype.replaceBlock = ((oldBox) => {
@@ -134,21 +136,37 @@ if(string == 'host'){
 
 });
 
-Render.prototype.movePlayerMinus = ((player, direction) => {
+Render.prototype.movePlayer = function(game) {
 
-  
+  this.screen.on('keypress', function(ch, key){
+    if (key.name == 'down'){
+      if(game.p1.rbottom > 0) game.p1.rtop += game.p1.speed;
+      game.screen.render();
+    }
+    else if(key.name == 'up'){
+      if (game.p1.rtop > 0) game.p1.rtop -= game.p1.speed;
+      game.screen.render();
+    }
+    else if(key.name == 'left'){
+      if(game.p1.rleft > 0) game.p1.rleft -= game.p1.speed;
+      game.screen.render();
+    }
+    else if(key.name == 'right'){
+      if(game.p1.rleft < game.screen.width) game.p1.rleft += game.p1.speed;
+      game.screen.render();
+    }
+  }); // Does 'this' operate as a pointer?
 
-  screen.render();
+  game.screen.render();
 
-
-});
-
-Render.prototype.movePlayerPlus = ((player, direction) => {
-  screen.render();
-});
+}
 
 Render.prototype.confirmConnect = (() => {
   p1.setContent('DATA RECEIEVED');
 });
+
+Render.prototype.getLocation = function(){
+  return [p1.rtop, p1.rleft];
+}
 
 module.exports.Render = Render;
