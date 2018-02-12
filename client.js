@@ -16,7 +16,7 @@ function multiClient(){
 
   screen.render();
 
-  const client = net.createConnection({ port: 8124 }, () => {
+  const client = net.createConnection({ port: 3000 }, () => {
     clientBox.setContent('CONNECTED TO HOST');
     setTimeout(() => {
       main.startGame('client');
