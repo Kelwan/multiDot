@@ -2,6 +2,7 @@
 const net = require('net');
 const blessed = require('blessed');
 const main = require('./main.js');
+const EventEmitter = require('events');
 
 function multiClient(){
 
@@ -28,7 +29,8 @@ function multiClient(){
   }, 1500);
 
   client.on('data', (data) => {
-    ClientData(data);
+    module.exports.ClientData.obj = JSON.parse(data.toString());
+    module.exports.ClientEmitter.emit('p1Position');
   });
 
   screen.key('q', () => {
@@ -37,13 +39,9 @@ function multiClient(){
 
 }
 
-function ClientData(obj) {
-  let clientPack = JSON.parse(obj);
-  clientPack.length-1;
-  this.clientPack = clientPack;
-}
 
 
 
-module.exports.ClientData = ClientData;
+module.exports.ClientEmitter = new EventEmitter();
+module.exports.ClientData = {};
 module.exports.multiClient = multiClient;

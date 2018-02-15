@@ -55,13 +55,13 @@ function Render(){
     content: 'SCORE: '
   });
 
-  let error = blessed.box({
-    parent: bg,
-    width: 5,
+  this.error = blessed.box({
+    parent: screen,
+    width: 20,
     height: 5,
-    top: 20,
-    left: 20,
-    color: 'white'
+    top: '50%',
+    left: '50%',
+    bg: 'yellow'
     //content: error
   });
 
@@ -73,7 +73,7 @@ function Render(){
     content: 'TEST'
   });
 
-  screen.key('e', function(){
+  /*screen.key('e', function(){
     let error = blessed.box({
       parent: bg,
       width: 5,
@@ -83,11 +83,12 @@ function Render(){
       color: 'white'
       //content: error
     });
-  });
+  });*/
 
-  screen.key('q', function(){
+  screen.key('q', () => {
     process.exit(0);
   });
+
 
 
 

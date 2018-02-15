@@ -7,6 +7,7 @@ const net = require('net');
 const server = require('./server.js');
 const client = require('./client.js');
 
+
 function rand(max, min){
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -44,6 +45,14 @@ function startGame(role, socket) {
 
     block.newBox(game, role);
 
+    client.ClientEmitter.on('p1Position', () => {
+      let test = client.ClientData;
+        game.error.setContent(JSON.stringify(test.obj));
+        game.p1.rleft = test.obj.left;
+        game.p1.rtop = test.obj.top;
+        game.screen.render();
+    });
+
     game.screen.on('keypress', function(ch, key){
       if (key.name == 'down'){
         if(game.p1.rbottom > 0) game.p1.rtop += game.p1.speed;
@@ -63,16 +72,18 @@ function startGame(role, socket) {
       }
 
       if (role == 'host') {
-        ForClient(game.p1.rleft, game.p1.rtop, socket);
+        forClient(game.p1.rleft, game.p1.rtop, socket);
       }
 
-        if(role == 'client'){
-          setTimeout(function (){
-            let clientObj = new client.ClientData;
-            game.p1.rleft = clientPack.top
-            game.p1.rtop = clientPack.left;
-          }, 50);
+        let test = client.ClientData;
+
+        if(test.obj == undefined){
+          game.error.setContent("undefined");
         }
+
+
+        game.screen.render();
+
     }); // Does 'this' operate as a pointer?
 
     game.screen.render();
@@ -88,17 +99,18 @@ function startGame(role, socket) {
       screen.render();
     }*/
 
+
 }
 
-function ForClient(left, top, score, socket){
+function forClient(hleft, htop, socket){
   let Package = {
-    left: left,
-    top: top
+    left: hleft,
+    top: htop
   };
-  socket.write(JSON.stringify(Package));
+  socket.write(JSON.stringify(Package), 'utf8');
 }
 
-function ForHost(left, top){
+function forHost(left, top){
   let Package = {
     left: left,
     top: top
@@ -108,5 +120,5 @@ function ForHost(left, top){
 
 
 module.exports.startGame = startGame;
-module.exports.ForClient = ForClient;
-module.exports.ForHost = ForHost;
+module.exports.forClient = forClient;
+module.exports.forHost = forHost;

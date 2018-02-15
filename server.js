@@ -8,7 +8,6 @@ function multiServer(){
 
 
   let screen = blessed.screen({});
-  let connection = false;
 
   let hostBox = blessed.box({
     parent: screen,
@@ -21,7 +20,6 @@ function multiServer(){
 
   const server = net.createServer((socket) => {
     hostBox.setContent('CLIENT CONNECTED');
-    connection = true;
     screen.render();
 
     setTimeout(() => {
