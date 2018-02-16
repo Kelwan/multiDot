@@ -46,34 +46,41 @@ function startGame(role, socket) {
     block.newBox(game, role);
 
     client.ClientEmitter.on('p1Position', () => {
-      let test = client.ClientData;
-        game.error.setContent(JSON.stringify(test.obj));
-        game.p1.rleft = test.obj.left;
-        game.p1.rtop = test.obj.top;
+      let hData = client.ClientData;
+        game.error.setContent(JSON.stringify(hData.obj));
+        game.p1.rleft = hData.obj.left;
+        game.p1.rtop = hData.obj.top;
         game.screen.render();
     });
 
+    server.HostEmitter.on('p2Position', () => {
+      let cData = server.HostData;
+      game.error.setContent(JSON.stringify(cData.obj));
+      game.p2.rleft = cData.obj.left;
+      game.p2.rtop = cData.obj.top;
+      game.screen.render();
+    });
+
+
+
+
+
     game.screen.on('keypress', function(ch, key){
-      if (key.name == 'down'){
-        if(game.p1.rbottom > 0) game.p1.rtop += game.p1.speed;
-        game.screen.render();
-      }
-      else if(key.name == 'up'){
-        if (game.p1.rtop > 0) game.p1.rtop -= game.p1.speed;
-        game.screen.render();
-      }
-      else if(key.name == 'left'){
-        if(game.p1.rleft > 0) game.p1.rleft -= game.p1.speed;
-        game.screen.render();
-      }
-      else if(key.name == 'right'){
-        if(game.p1.rleft < game.screen.width) game.p1.rleft += game.p1.speed;
-        game.screen.render();
-      }
+
+      game.movePiece(ch, key, role);
+
 
       if (role == 'host') {
-        forClient(game.p1.rleft, game.p1.rtop, socket);
+        let loc = game.getLocation(role);
+        forClient(loc[0], loc[1], socket);
       }
+
+      if(role == 'client') {
+        let loc = game.getLocation(role);
+        forHost(loc[0], loc[1], socket);
+      }
+
+
 
         let test = client.ClientData;
 
@@ -110,12 +117,15 @@ function forClient(hleft, htop, socket){
   socket.write(JSON.stringify(Package), 'utf8');
 }
 
-function forHost(left, top){
+function forHost(cleft, ctop, client){
   let Package = {
-    left: left,
-    top: top
+    left: cleft,
+    top: ctop
   };
+  client.write(JSON.stringify(Package), 'utf8');
 }
+
+
 
 
 

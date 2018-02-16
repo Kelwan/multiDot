@@ -2,6 +2,7 @@
 const net = require('net');
 const blessed = require('blessed');
 const main = require('./main.js');
+const EventEmitter = require('events');
 
 
 function multiServer(){
@@ -32,7 +33,8 @@ function multiServer(){
     });
 
     socket.on('data', (data) => {
-
+      module.exports.HostData.obj = JSON.parse(data.toString());
+      module.exports.HostEmitter.emit('p2Position');
     });
 
 
@@ -42,7 +44,7 @@ function multiServer(){
     console.log(err);
   });
 
-  server.listen(3000, () => {
+  server.listen(8124, () => {
 
   });
 
@@ -55,6 +57,7 @@ function multiServer(){
 
 }
 
-
+module.exports.HostData = {};
+module.exports.HostEmitter = new EventEmitter();
 module.exports.multiServer = multiServer;
 // It becomes a method for 'server'??

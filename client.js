@@ -17,10 +17,10 @@ function multiClient(){
 
   screen.render();
 
-  const client = net.createConnection({ port: 3000 }, () => {
+  const client = net.createConnection({ port: 8124 }, () => {
     clientBox.setContent('CONNECTED TO HOST');
     setTimeout(() => {
-      main.startGame('client');
+      main.startGame('client', client);
     }, 1500);
   });
 
@@ -37,9 +37,10 @@ function multiClient(){
     process.exit(0);
   });
 
+
+
+
 }
-
-
 
 
 module.exports.ClientEmitter = new EventEmitter();

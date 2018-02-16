@@ -20,7 +20,7 @@ function Render(){
     width: screen.width
   });
 
-  let p1 = blessed.box({
+  p1 = blessed.box({
     parent: bg,
     width: 3,
     height: 3,
@@ -33,7 +33,7 @@ function Render(){
   p1.speed = 1;
   p1.movable = true;
 
-  let p2 = blessed.box({
+  p2 = blessed.box({
     parent: bg,
     width: 3,
     height: 3,
@@ -108,9 +108,45 @@ Render.prototype.renderScreen = (()=> {
   screen.render();
 });
 
+Render.prototype.movePiece = function(ch, key, role) {
+  if(role == 'host'){
+    if (key.name == 'down'){
+      if(p1.rbottom > 0) p1.rtop += p1.speed;
+      this.screen.render();
+    }
+    else if(key.name == 'up'){
+      if (p1.rtop > 0) p1.rtop -= p1.speed;
+      this.screen.render();
+    }
+    else if(key.name == 'left'){
+      if(p1.rleft > 0) p1.rleft -= p1.speed;
+    }
+    else if(key.name == 'right'){
+      if(p1.rleft < this.screen.width) p1.rleft += p1.speed;
+    }
+  }
+
+  if (role == 'client'){
+    if (key.name == 'down'){
+      if(p2.rbottom > 0) p2.rtop += p2.speed;
+      this.screen.render();
+    }
+    else if(key.name == 'up'){
+      if (p2.rtop > 0) p2.rtop -= p2.speed;
+      this.screen.render();
+    }
+    else if(key.name == 'left'){
+      if(p2.rleft > 0) p2.rleft -= p2.speed;
+    }
+    else if(key.name == 'right'){
+      if(p2.rleft < this.screen.width) p2.rleft += p2.speed;
+    }
+  }
+}
+
 Render.prototype.newBox = function () {
   let box = blessed.box({
-    parent: game.screen,
+    parent: this.screen,
     height: 3,
     width: 3,
     left: block.rand1,
@@ -137,37 +173,18 @@ if(string == 'host'){
 
 });
 
-Render.prototype.movePlayer = function(game) {
-
-  this.screen.on('keypress', function(ch, key){
-    if (key.name == 'down'){
-      if(game.p1.rbottom > 0) game.p1.rtop += game.p1.speed;
-      game.screen.render();
-    }
-    else if(key.name == 'up'){
-      if (game.p1.rtop > 0) game.p1.rtop -= game.p1.speed;
-      game.screen.render();
-    }
-    else if(key.name == 'left'){
-      if(game.p1.rleft > 0) game.p1.rleft -= game.p1.speed;
-      game.screen.render();
-    }
-    else if(key.name == 'right'){
-      if(game.p1.rleft < game.screen.width) game.p1.rleft += game.p1.speed;
-      game.screen.render();
-    }
-  }); // Does 'this' operate as a pointer?
-
-  game.screen.render();
-
-}
-
-Render.prototype.confirmConnect = (() => {
+Render.prototype.troubleshoot = (() => {
   p1.setContent('DATA RECEIEVED');
 });
 
-Render.prototype.getLocation = function(){
-  return [p1.rtop, p1.rleft];
+Render.prototype.getLocation  = function(role){
+  if (role == 'host'){
+    return [p1.rleft, p1.rtop];
+  }
+
+  else if(role == 'client'){
+    return [p2.rleft, p2.rtop]
+  }
 }
 
 module.exports.Render = Render;
