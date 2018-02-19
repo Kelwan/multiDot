@@ -55,7 +55,7 @@ function Render(){
     content: 'SCORE: '
   });
 
-  this.error = blessed.box({
+  /*this.error = blessed.box({
     parent: screen,
     width: 20,
     height: 5,
@@ -63,7 +63,8 @@ function Render(){
     left: '50%',
     bg: 'yellow'
     //content: error
-  });
+
+  });*/
 
   let tally = blessed.box({
     parent: score,
@@ -73,17 +74,9 @@ function Render(){
     content: 'TEST'
   });
 
-  /*screen.key('e', function(){
-    let error = blessed.box({
-      parent: bg,
-      width: 5,
-      height: 5,
-      top: 20,
-      left: 20,
-      color: 'white'
-      //content: error
-    });
-  });*/
+  screen.key('e', function(){
+
+  });
 
   screen.key('q', () => {
     process.exit(0);
@@ -144,7 +137,7 @@ Render.prototype.movePiece = function(ch, key, role) {
   }
 }
 
-Render.prototype.newBox = function () {
+Render.prototype.newBox = (() => {
   let box = blessed.box({
     parent: this.screen,
     height: 3,
@@ -154,7 +147,8 @@ Render.prototype.newBox = function () {
     bg: 'green',
     content: 'Eat me!'
   });
-};
+  this.screen.render();
+});
 
 Render.prototype.replaceBlock = ((oldBox) => {
   //oldBox.destroy();
