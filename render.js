@@ -10,9 +10,6 @@ function Render(){
     smartCSR : true
   });
 
-  let p1Score = 0;
-  let p2Score = 0;
-
   let bg = blessed.box({
     parent: screen,
     bg: 'blue',
@@ -55,6 +52,22 @@ function Render(){
     content: 'SCORE: '
   });
 
+  let p1Score = blessed.text({
+    parent: bg,
+    top: 2,
+    left: 5,
+    color: 'red',
+    content: '0'
+  });
+
+  let p2Score = blessed.text({
+    parent: score,
+    top: 2,
+    left: 15,
+    height: 1,
+    content: '0'
+  });
+
   /*this.error = blessed.box({
     parent: screen,
     width: 20,
@@ -66,14 +79,6 @@ function Render(){
 
   });*/
 
-  let tally = blessed.box({
-    parent: score,
-    top: 1,
-    left: 10,
-    height: 1,
-    content: 'TEST'
-  });
-
   screen.key('e', function(){
 
   });
@@ -82,20 +87,21 @@ function Render(){
     process.exit(0);
   });
 
-
-
-
   this.screen = screen;
   this.p1 = p1;
   this.p2 = p2;
+  this.p1Score = p1Score;
+  this.p2Score = p2Score;
 
   screen.render();
 
 }
 
-Render.prototype.updateScore = ((p1Score, p2Score) => {
-
-});
+Render.prototype.updateScore = function (p1Score, p2Score) {
+  //p1Score.setContent(p1Score);
+  //p2Score.setContent(p2Score);
+  //this.screen.render();
+}
 
 Render.prototype.renderScreen = (()=> {
   screen.render();
@@ -167,9 +173,21 @@ if(string == 'host'){
 
 });
 
-Render.prototype.troubleshoot = (() => {
-  p1.setContent('DATA RECEIEVED');
-});
+Render.prototype.checkOverlap = function(left, top, role){
+
+  if(role == 'host'){
+    if(p1.rleft == left && p1.rtop == top){
+      return role;
+    }
+  }
+  else if(role == 'client'){
+    if(p2.rleft == left && p2.rtop == top){
+      return role;
+    }
+  }
+  else {return 'denied'};
+  this.screen.render();
+}
 
 Render.prototype.getLocation  = function(role){
   if (role == 'host'){

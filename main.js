@@ -32,6 +32,17 @@ Block.prototype.replaceBlock = function() {
 
   this.rand1 = rand(this.width, 1);
   this.rand2 = rand(this.height, 10);
+  let box = blessed.box({
+    parent: this.gScreen,
+    height: 3,
+    width: 3,
+    left: this.rand1,
+    top: this.rand2,
+    bg: 'green',
+    content: 'eat me'
+  });
+
+  this.box = box;
 
 };
 
@@ -45,6 +56,7 @@ Block.prototype.createBlock = function(){
     bg: 'green',
     content: 'eat me'
   });
+  this.box = box;
 
 }
 
@@ -58,31 +70,31 @@ Block.prototype.clientBlock = function (rand1, rand2) {
     bg: 'green',
     content: 'eat me'
   });
+  this.rand1 = rand1;
+  this.rand2 = rand2;
+  this.box = box;
 };
 
-function Player(player){
+function Player(player, score){
   this.player = player;
+  this.score = score;
 }
-
-
 
 function startGame(role, socket) {
   let game = new render.Render;
   let block;
+  let score = 0;
 
   block = new Block(game.screen.width, game.screen.height, game.screen);
   if(role == 'host'){
     block.getRandom();
     block.createBlock();
     let loc = game.getLocation(role);
-
     forClient(loc[0], loc[1], socket, block.rand1, block.rand2);
-
-
   }
 
-  let p1 = new Player("p1");
-  let p2 = new Player("p2");
+  let p1 = new Player("p1", 0);
+  let p2 = new Player("p2", 0);
 
   game.screen.render();
 
@@ -94,11 +106,10 @@ function startGame(role, socket) {
             game.p1.rleft = hData.obj.left;
             game.p1.rtop = hData.obj.top;
           }
-          if(hData.obj.rand1 != undefined){
-            block.clientBlock(hData.obj.rand1, hData.obj.rand2);
-          }
-          game.screen.render();
+
           block.clientBlock(hData.obj.rand1, hData.obj.rand2);
+          game.screen.render();
+
     });
 
 
@@ -126,31 +137,32 @@ function startGame(role, socket) {
         forHost(loc[0], loc[1], socket);
       }
 
-
-
-        let test = client.ClientData;
+      let test = client.ClientData;
 
         if(test.obj == undefined){
         //  game.error.setContent("undefined");
         }
-
-
         game.screen.render();
 
     }); // Does 'this' operate as a pointer?
 
     game.screen.render();
 
+    // Check for overlap and victory
 
-    //game.movePlayer(game);
+  setTimeout(() => {
+    let position = game.getLocation(role);
+    let checkScore;
+    let myEmitter = new EventEmitter();
 
-    // Check for overlap
-    /*if(block.box.left == p1.left && block.box.top == p1.top){
-      p1.score++;
-      score.setContent('SCORE: ' + p1.score);
-      let randBlock = block.newBox(block.box);
-      screen.render();
-    }*/
+    if(position[0] == block.box.rleft && position[1] == block.box.rtop){
+      p2.score++;
+    }
+
+
+    }, 100);
+  })
+
 
 
 }
