@@ -20,8 +20,8 @@ function Block(width, height, gScreen){
 }
 
 Block.prototype.getRandom = function() {
-  let rand1 = rand(this.width, 1);
-  let rand2 = rand(this.height, 10);
+  let rand1 = rand(this.width - 5, 5);
+  let rand2 = rand(this.height - 5, 10);
   this.rand1 = rand1;
   this.rand2 = rand2;
 
@@ -30,8 +30,6 @@ Block.prototype.getRandom = function() {
 Block.prototype.replaceBlock = function() {
   this.box.destroy();
 
-  this.rand1 = rand(this.width, 1);
-  this.rand2 = rand(this.height, 10);
   let box = blessed.box({
     parent: this.gScreen,
     height: 3,
@@ -41,6 +39,7 @@ Block.prototype.replaceBlock = function() {
     bg: 'green',
     content: 'eat me'
   });
+
 
   this.box = box;
 
@@ -61,6 +60,11 @@ Block.prototype.createBlock = function(){
 }
 
 Block.prototype.clientBlock = function (rand1, rand2) {
+
+  if(this.box != undefined){
+    this.box.destroy();
+  }
+
   let box = blessed.box({
     parent: this.gScreen,
     height: 3,
@@ -93,8 +97,8 @@ function startGame(role, socket) {
     forClient(loc[0], loc[1], socket, block.rand1, block.rand2);
   }
 
-  let p1 = new Player("p1", 0);
-  let p2 = new Player("p2", 0);
+  let player1 = new Player("p1", 0, "host");
+  let player2 = new Player("p2", 0, "client");
 
   game.screen.render();
 
@@ -106,6 +110,8 @@ function startGame(role, socket) {
             game.p1.rleft = hData.obj.left;
             game.p1.rtop = hData.obj.top;
           }
+
+          player1.score = hData.obj.score;
 
           block.clientBlock(hData.obj.rand1, hData.obj.rand2);
           game.screen.render();
@@ -119,68 +125,89 @@ function startGame(role, socket) {
       //game.error.setContent(JSON.stringify(cData.obj));
       game.p2.rleft = cData.obj.left;
       game.p2.rtop = cData.obj.top;
+
+      player2.score = cData.obj.score;
+
       game.screen.render();
     });
 
     game.screen.on('keypress', function(ch, key){
 
-      game.movePiece(ch, key, role);
-
-
-      if (role == 'host') {
-        let loc = game.getLocation(role);
-        forClient(loc[0], loc[1], socket, block.rand1, block.rand2);
-      }
-
-      if(role == 'client') {
-        let loc = game.getLocation(role);
-        forHost(loc[0], loc[1], socket);
-      }
 
       let test = client.ClientData;
 
         if(test.obj == undefined){
         //  game.error.setContent("undefined");
         }
-        game.screen.render();
 
+        // Check for overlap and victory
+        setTimeout(() => {
+          let position = game.getLocation(role);
+          let checkScore;
+          let myEmitter = new EventEmitter();
+
+
+          if(position[0] == block.box.rleft && position[1] == block.box.rtop){
+            let p2Scored = false;
+
+            if(role == 'client'){
+              p2Scored = true;
+              player2.score++;
+            }
+            if(role == 'host'){
+              player1.score++;
+              block.getRandom();
+              block.replaceBlock();
+            }
+
+            if(p2Scored == true && role == 'host'){
+              block.getRandom();
+              block.replaceBlock();
+            }
+
+
+
+          }
+
+          }, 100);
+
+          game.movePiece(ch, key, role);
+          if (role == 'host') {
+            let loc = game.getLocation(role);
+            forClient(loc[0], loc[1], socket, block.rand1, block.rand2, player1.score);
+          }
+
+          if(role == 'client') {
+            let loc = game.getLocation(role);
+            forHost(loc[0], loc[1], socket, player2.score);
+          }
+          game.updateScore(player1.score, player2.score);
+
+        game.screen.render();
     }); // Does 'this' operate as a pointer?
 
     game.screen.render();
 
-    // Check for overlap and victory
-
-  setTimeout(() => {
-    let position = game.getLocation(role);
-    let checkScore;
-    let myEmitter = new EventEmitter();
-
-    if(position[0] == block.box.rleft && position[1] == block.box.rtop){
-      p2.score++;
-    }
-
-
-    }, 100);
-  })
-
 
 
 }
 
-function forClient(hleft, htop, socket, hRand1, hRand2){
+function forClient(hleft, htop, socket, hRand1, hRand2, hScore){
   let Package = {
     left: hleft,
     top: htop,
     rand1: hRand1,
-    rand2: hRand2
+    rand2: hRand2,
+    score: hScore
   };
   socket.write(JSON.stringify(Package), 'utf8');
 }
 
-function forHost(cleft, ctop, client){
+function forHost(cleft, ctop, client, cScore){
   let Package = {
     left: cleft,
     top: ctop,
+    score: cScore
   };
   client.write(JSON.stringify(Package), 'utf8');
 }

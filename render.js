@@ -97,10 +97,22 @@ function Render(){
 
 }
 
-Render.prototype.updateScore = function (p1Score, p2Score) {
-  //p1Score.setContent(p1Score);
-  //p2Score.setContent(p2Score);
-  //this.screen.render();
+Render.prototype.updateScore = function (p1Tally, p2Tally) {
+
+  //p1.setContent(p1Score.toString());
+  //p2.setContent(p2Score.toString());
+  if(p1Tally != undefined){
+    this.p1Score.setContent(p1Tally.toString());
+  }
+
+  if(p2Tally != undefined){
+    this.p2Score.setContent(p2Tally.toString()); //This seems completely random...
+    // P2 does not need 'this', but p2Score does???
+  }
+
+  this.screen.render();
+
+  return [p1Tally, p2Tally];
 }
 
 Render.prototype.renderScreen = (()=> {
@@ -111,6 +123,7 @@ Render.prototype.movePiece = function(ch, key, role) {
   if(role == 'host'){
     if (key.name == 'down'){
       if(p1.rbottom > 0) p1.rtop += p1.speed;
+      //p1.setContent('I AM A HYPOCRITE');
       this.screen.render();
     }
     else if(key.name == 'up'){
