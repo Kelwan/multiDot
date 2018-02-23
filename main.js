@@ -141,7 +141,6 @@ function startGame(role, socket) {
         }
 
         // Check for overlap and victory
-        setTimeout(() => {
           let position = game.getLocation(role);
           let checkScore;
           let myEmitter = new EventEmitter();
@@ -168,8 +167,6 @@ function startGame(role, socket) {
 
 
           }
-
-        }, 50);
 
           game.movePiece(ch, key, role);
           if (role == 'host') {
