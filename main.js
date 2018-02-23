@@ -102,6 +102,20 @@ function startGame(role, socket) {
 
   game.screen.render();
 
+
+  server.CatchEmitter.on('serverErr', (data) => {
+
+    game.error.setContent(data.toString());
+    game.screen.render();
+
+  });
+  client.CatchEmitter.on('clientErr', (data) => {
+
+    game.error.setContent(data.toString());
+    game.screen.render();
+
+  });
+
     client.ClientEmitter.on('p1Position', () => {
 
         let hData = client.ClientData;

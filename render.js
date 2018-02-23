@@ -68,16 +68,16 @@ function Render(){
     content: '0'
   });
 
-  /*this.error = blessed.box({
+  this.error = blessed.box({
     parent: screen,
     width: 20,
-    height: 5,
+    height: 10,
     top: '50%',
     left: '50%',
     bg: 'yellow'
     //content: error
 
-  });*/
+  });
 
   screen.key('e', function(){
 

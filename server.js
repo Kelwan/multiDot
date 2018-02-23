@@ -33,7 +33,12 @@ function multiServer(){
     });
 
     socket.on('data', (data) => {
-      module.exports.HostData.obj = JSON.parse(data.toString());
+      try {
+        module.exports.HostData.obj = JSON.parse(data.toString());
+      } catch(err){
+        module.exports.CatchEmitter.emit('serverErr', data);
+      }
+
       module.exports.HostEmitter.emit('p2Position');
     });
 
@@ -57,6 +62,7 @@ function multiServer(){
 
 }
 
+module.exports.CatchEmitter = new EventEmitter();
 module.exports.HostData = {};
 module.exports.HostEmitter = new EventEmitter();
 module.exports.multiServer = multiServer;
