@@ -44,7 +44,7 @@ function multiServer(){
     console.log(err);
   });
 
-  server.listen(8124, () => {
+  server.listen(3000, () => {
 
   });
 
