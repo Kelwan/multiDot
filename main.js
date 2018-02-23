@@ -169,7 +169,7 @@ function startGame(role, socket) {
 
           }
 
-          }, 100);
+        }, 50);
 
           game.movePiece(ch, key, role);
           if (role == 'host') {
